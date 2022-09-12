@@ -1,0 +1,95 @@
+version: "2"
+
+services:
+  Plex:
+     image: lscr.io/linuxserver/plex:latest
+     container_name: Plex
+     restart: unless-stopped
+     network_mode: host
+     environment:
+       - PUID=1000
+       - PGID=1000
+       - VERSION=docker
+       - TZ=America/New_York
+     volumes:
+       - /opt/media:/config
+       - /opt/media/tv:/tv
+       - /opt/media/movies:/movies
+
+  Sonarr:
+     image: lscr.io/linuxserver/sonarr:latest
+     container_name: sonarr
+     restart: unless-stopped
+     environment: 
+       - PUID=1000
+       - PGID=1000
+       - TZ=America/New_York
+     ports: 
+        - 8989:8989
+     volumes:
+        - /opt/media:/config
+        - /opt/media/tv:/tv
+        - /opt/media/downloads:/downloads
+
+   
+  Radarr:
+     image: lscr.io/linuxserver/radarr:latest
+     container_name: Radarr
+     restart: unless-stopped
+     environment:
+       - PUID=1000
+       - PGID=1000
+       - TZ=America/New_York
+     ports: 
+        - 7878:7878
+     volumes:
+        - /opt/media:/config
+        - /opt/media/movies:/movies
+        - /opt/media/downloads:/downloads  
+ 
+
+  Jackett:
+      image: lscr.io/linuxserver/jackett:latest
+      container_name: Jackett
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - VERSION=docker
+        - TZ=America/New_York
+      ports: 
+        - 9117:9117
+      volumes:
+        - /opt/media:/config
+        - /opt/media/downloads:/downloads   
+ 
+
+  Overserr:
+      image: lscr.io/linuxserver/overseerr:latest
+      container_name: overseerr
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=America/New_York
+      ports: 
+        - 5055:5055
+      volumes:
+        - /opt/media:/config
+
+  Rtorrent:
+      image: ghcr.io/linuxserver/rutorrent
+      container_name: overseerr
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=America/New_York
+      ports:
+        - "8081:80"
+        - "5000:5000"
+        - "51413:51413"
+        - "6881:6881/udp"
+      volumes:
+        - /opt/media:/config
+        - /opt/media/downloads:/downloads 
